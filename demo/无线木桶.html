@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>木桶布局</title>
+  <style type="text/css">
+
+    .img-ct {
+      width: 1200px;
+      margin: 0 auto;
+    }
+    .img-arr {
+      width: 1201px;
+
+    }
+    /*.imh-arr {
+      margin-top: -10px;
+      margin-right: -10px;
+    }*/
+    .img-arr:after {
+      content: '';
+      display: block;
+      clear: both;
+    }
+    .img-ct>.img-arr>img {
+      display: block;
+      float: left;
+/*      padding-top: 10px;
+      padding-right: 10px;
+      box-sizing: border-box;*/
+      margin-top: 10px;
+      margin-right: 10px;
+    }
+    .loading {
+      position: relative;
+      margin: 5px auto;
+      border-top: 15px solid rgba(6, 224, 154,0.2);
+      border-right: 15px solid rgba(6, 224, 154,0.2);
+      border-bottom: 15px solid rgba(6, 224, 154,0.2);
+      border-left: 15px solid rgba(6, 224, 154,1);
+      animation: load 1s infinite linear;
+    }
+    .loading {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    @keyframes load {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+/*    .img-ct {
+      margin-top: -10px;
+      margin-right: -10px;
+    }*/
+/*    .img-ct {
+      width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .img-arr:after {
+      content: '';
+      display: block;
+      clear: both;
+    }
+    .img-ct>.img-arr>img {
+      float: left;
+      margin-top: 10px;
+      margin-right: 10px;
+    }
+*/
+  </style>
+</head>
+<body>
+  <div class="img-ct"></div>
+  <div class="loading btn"></div>
+<!--   <button class="btn">加载更多</button> -->
+<!--   <div class="img-ct">
+    <div class="img-arr">
+      <img src="https://unsplash.it/209/184/?random">
+    </div>
+  </div> -->
+
+  <script type="text/javascript" src="node_modules/_jquery@3.2.1@jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript">
+    var Barrels = (function(){
+      function _Barrels($ct,num){
+        this.$ct = $ct
+        this.num = num
+        // this.lock = true
+        this.rowList = []
+
+        
+        this.loadImg()
+      }
+
+      _Barrels.prototype = {
+        loadImg: function(){
+
+          var num = this.num
+          var imgsUrl = this.getImgUrls(num)
+          // console.log(imgsUrl)
+          // imgs.push(this.getImgUrls(10))
+          var _this = this
+
+          for (var i = 0; i < imgsUrl.length; i++) {
+            !function(){
+              var img = new Image()
+              img.src = imgsUrl[i]
+              
+              img.onload = function(){
+                var imgInfo = {
+                  target: this,
+                  height: 200,
+                  width: 200*(this.width/this.height)
+                }
+
+                // console.log(this)
+                // this.height = 200
+                // img.width = 200*(img.width/img.height)
+                // console.log(img.width)
+                _this.render(imgInfo)
+                // console.log(imgInfo)
+
+              }
+            }()
+          }
+        },
+        getImgUrls: function(num){
+          var urls = [];
+          for (var i = 0; i<num ;i++){
+            src = 'https://unsplash.it/'+parseInt(Math.random()*100+400)+'/'+parseInt(Math.random()*100+200)+'/?random'
+            urls.push(src)
+          }
+          return urls;
+          // var width,height,urls = []
+          // for (var i = 0; i < num; i++) {
+          //   width = Math.floor(Math.random()*100+200)
+          //   height = Math.floor(Math.random()*100+100)
+          //   urls.push('https://unsplash.it/'+ width+'/'+height+'/?random')
+          // }
+          // return urls
+        },
+        render: function(imgInfo){
+          // console.log(imgInfo)
+          var clientWidth = this.$ct.width()
+          // console.log(clientWidth)
+          var rowWidth = 0
+          var rowHeight = 0
+          // var lastImgInfo = imgInfo
+          this.rowList.push(imgInfo)
+
+          for (var i = 0; i < this.rowList.length; i++) {
+            rowWidth = rowWidth+this.rowList[i].width
+            clientWidth -=10
+          }
+          // console.log(this.rowList)
+          if (rowWidth>clientWidth) {
+            clientWidth +=10
+            rowWidth -= imgInfo.width
+            this.rowList.pop()
+            var newRowHeight = 200*(clientWidth/rowWidth)
+            this.layOut(newRowHeight)
+            this.rowList = []
+            this.rowList.push(imgInfo)
+            // rowWidth = lastImgInfo.width
+          }
+          
+        },
+        layOut: function(newRowHeight){
+
+          // var _this = this
+          // var $imgCt = $('<div class="img-ct"></div>')
+          var $imgArr = $('<div class="img-arr"></div>')
+          $.each(this.rowList,function(idx,imgInfo){
+            
+            var $img = $(imgInfo.target)
+            $img.height(newRowHeight)
+
+            // this.height = newRowHeight
+            // console.log(this)
+            $imgArr.append($img)
+            // _this.lock = true
+            
+            // console.log('-------')
+            // console.log($img)
+            // $imgCt.append($imgArr)
+
+          })
+          // $imgCt.append($imgArr)
+          this.$ct.append($imgArr)
+          // this.lock = true
+          // console.log(this.$ct)
+
+        }
+      }
+      return {
+        init: function($ct,num){
+
+          new _Barrels($ct,num)
+          // this.lock = false
+        }
+      }
+    })()
+    Barrels.init($('.img-ct'),10)
+    $(window).scroll(function () {
+      if (isBottom()) {
+        Barrels.init($('.img-ct'),10)
+      } else {
+        console.log('继续滚')
+      }
+    })
+
+    function isBottom () {
+      return $(window).scrollTop() + $(window).height() == $(document).height()
+    }
+    // Barrels.init($('.img-ct'),6)
+    // var lock = true
+    $('.btn').on('click',function(){
+      // if (!lock) {
+      //       return
+      //     }
+      
+      Barrels.init($('.img-ct'),10)
+      // lock = false
+
+    })
+
+    // var showImg = new Barrels($('.img-ct'),10)
+    // showImg
+    
+  </script>
+
+</body>
+</html>
