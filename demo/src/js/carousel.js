@@ -4,6 +4,7 @@ define(['jquery'],function($){
       this.$ct = $ct
       this.init()
       this.bind()
+      this.autoplay()
     }
     _Carousel.prototype = {
       init: function(){
@@ -16,6 +17,7 @@ define(['jquery'],function($){
         var imgLength = this.imgLength = $imgCt.children().length
         var curPageIndex = this.curPageIndex = 0
         var isAnimate = this.isAnimate = false
+        var clock = this.clock = null
 
         $imgCt.prepend($lastImg.clone())
         $imgCt.append($firstImg.clone())
@@ -93,6 +95,12 @@ define(['jquery'],function($){
                .removeClass('active')
                .eq(this.curPageIndex)
                .addClass('active')
+      },
+      autoplay: function(){
+        var _this = this
+        var clock = setInterval(function(){
+          _this.playNext()
+        },3000)
       }
 
     }

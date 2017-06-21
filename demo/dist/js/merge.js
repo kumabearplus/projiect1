@@ -10460,6 +10460,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
       this.$ct = $ct
       this.init()
       this.bind()
+      this.autoplay()
     }
     _Carousel.prototype = {
       init: function(){
@@ -10472,6 +10473,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         var imgLength = this.imgLength = $imgCt.children().length
         var curPageIndex = this.curPageIndex = 0
         var isAnimate = this.isAnimate = false
+        var clock = this.clock = null
 
         $imgCt.prepend($lastImg.clone())
         $imgCt.append($firstImg.clone())
@@ -10549,6 +10551,12 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                .removeClass('active')
                .eq(this.curPageIndex)
                .addClass('active')
+      },
+      autoplay: function(){
+        var _this = this
+        var clock = setInterval(function(){
+          _this.playNext()
+        },3000)
       }
 
     }
