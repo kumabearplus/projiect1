@@ -207,14 +207,13 @@ body {
   font-size: 40px;
   margin-top: 150px;
   margin-bottom: 20px;
-  font-style: italic;
-  color: #2b1fe4;
+  color: #000;
 }
 .introduce .theme {
   font-size: 70px;
   font-weight: bold;
   margin-bottom: 30px;
-  color: #00f3ff;
+  color: #000;
 }
 .introduce a {
   background-color: #ffd136;
